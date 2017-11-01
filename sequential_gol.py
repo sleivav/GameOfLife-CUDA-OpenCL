@@ -2,7 +2,7 @@ from gol import GameOfLife
 
 
 class SequentialGameOfLife(GameOfLife):
-    def __init__(self, input_file: str, program_file: str):
+    def __init__(self, input_file: str, program_file: str = None):
         super().__init__(input_file, program_file)
 
     def compute(self, matrix_width: int, matrix_height: int):
