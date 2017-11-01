@@ -43,9 +43,6 @@ __kernel void simpleLifeKernel(__global int* lifeData, __global int* dims, __glo
     resultLifeData[x + yAbs] =
       aliveCells == 3 || (aliveCells == 2 && lifeData[x + yAbs]) ? 1 : 0;
   }
-  int swap = *lifeData;
-  *lifeData = *resultLifeData;
-  *resultLifeData = swap;
 }
 """).build()
 

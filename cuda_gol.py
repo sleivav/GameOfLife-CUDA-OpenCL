@@ -49,9 +49,7 @@ def iterate(iterations: int):
     func = kernel.get_function("simpleLifeKernel")
     for i in range(iterations):
         func(data_gpu, np.int32(width), np.int32(height), res_gpu, block=(32, 32, 1))
-        temp = data_gpu
         data_gpu = res_gpu
-        res_gpu = temp
     data_matrix = drv.from_device(data_gpu, (width, height), 'int')
 
 then = time.time()
