@@ -1,10 +1,11 @@
-__global__ void simpleLifeKernel(int* lifeData, int worldWidth,
-    int worldHeight, int* resultLifeData) {
+__kernel void simpleLifeKernel(__global int* lifeData, __global int* dims, __global int* resultLifeData) {
+  int worldWidth = dims[0];
+  int worldHeight = dims[1];
   int worldSize = worldWidth * worldHeight;
 
-  for (int cellId = __mul24(blockIdx.x, blockDim.x) + threadIdx.x;
+  for (int cellId = get_global_id(0);
       cellId < worldSize;
-      cellId += blockDim.x * gridDim.x) {
+      cellId += get_local_size(0) * get_num_groups(0)) {
     int x = cellId % worldWidth;
     int yAbs = cellId - x;
     int xLeft = (x + worldWidth - 1) % worldWidth;
