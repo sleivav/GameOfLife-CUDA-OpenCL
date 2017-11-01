@@ -1,57 +1,28 @@
 import pycuda.driver as drv
 import pycuda.autoinit
 import numpy as np
-import time
-
-import data_manager
 
 from pycuda.compiler import SourceModule
 
-kernel = SourceModule("""
-__global__ void simpleLifeKernel(int* lifeData, int worldWidth,
-    int worldHeight, int* resultLifeData) {
-  int worldSize = worldWidth * worldHeight;
- 
-  for (int cellId = __mul24(blockIdx.x, blockDim.x) + threadIdx.x;
-      cellId < worldSize;
-      cellId += blockDim.x * gridDim.x) {
-    int x = cellId % worldWidth;
-    int yAbs = cellId - x;
-    int xLeft = (x + worldWidth - 1) % worldWidth;
-    int xRight = (x + 1) % worldWidth;
-    int yAbsUp = (yAbs + worldSize - worldWidth) % worldSize;
-    int yAbsDown = (yAbs + worldWidth) % worldSize;
- 
-    int aliveCells = lifeData[xLeft + yAbsUp] + lifeData[x + yAbsUp]
-      + lifeData[xRight + yAbsUp] + lifeData[xLeft + yAbs] + lifeData[xRight + yAbs]
-      + lifeData[xLeft + yAbsDown] + lifeData[x + yAbsDown] + lifeData[xRight + yAbsDown];
- 
-    resultLifeData[x + yAbs] =
-      aliveCells == 3 || (aliveCells == 2 && lifeData[x + yAbs]) ? 1 : 0;
-  }
-}
-""")
-
-width = 1024
-height = 1024
-
-data_matrix = data_manager.load_data().flatten()
-result_matrix = np.empty(shape=(width, height)).flatten()
+from gol import GameOfLife
 
 
-def iterate(iterations: int):
-    global data_matrix
-    global result_matrix
-    data = data_matrix.astype(np.int32)
-    res = data_matrix.astype(np.int32)
-    data_gpu = drv.to_device(data)
-    res_gpu = drv.to_device(res)
-    func = kernel.get_function("simpleLifeKernel")
-    for i in range(iterations):
-        func(data_gpu, np.int32(width), np.int32(height), res_gpu, block=(32, 32, 1))
-        data_gpu = res_gpu
-    data_matrix = drv.from_device(data_gpu, (width, height), 'int')
+class CudaGameOfLife(GameOfLife):
+    def __init__(self, input_file: str, program_file: str):
+        super().__init__(input_file, program_file)
+        self.data_matrix = self.data_matrix.flatten()
+        self.result_matrix = self.result_matrix.flatten()
+        self.kernel = SourceModule(self.program_file.read())
 
-then = time.time()
-iterate(200)
-print(time.time() - then)
+    def iterate(self, iterations: int):
+        data = self.data_matrix.astype(np.int32)
+        res = self.data_matrix.astype(np.int32)
+        data_gpu = drv.to_device(data)
+        res_gpu = drv.to_device(res)
+        func = self.kernel.get_function("simpleLifeKernel")
+        for i in range(iterations):
+            func(data_gpu, np.int32(self.width),
+                 np.int32(self.height), res_gpu, block=(32, 32, 1))
+            data_gpu = res_gpu
+        self.data_matrix = drv.from_device(data_gpu,
+                                           (self.width, self.height), 'int')
