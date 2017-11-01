@@ -3,16 +3,13 @@ import numpy as np
 import pyopencl as cl
 import os
 
-import data_manager
-
-os.environ['PYOPENCL_COMPILER_OUTPUT'] = '1'
-
+from data_manager import DataManager
 
 width = 5
 height = 5
 dimensions = np.array([width, height])
 
-data_matrix = data_manager.load_data().flatten()
+data_matrix = DataManager.load_data('test.out').flatten()
 result_matrix = np.empty(shape=(width, height)).flatten()
 
 ctx = cl.create_some_context()
@@ -59,12 +56,9 @@ def iterate(iterations: int):
         prg.simpleLifeKernel(queue, data_matrix.shape, None,
                              life_data, dim, result_life_data)
         life_data = result_life_data
-
     res_np = np.empty_like(res)
     cl.enqueue_copy(queue, res_np, result_life_data).wait()
     data_matrix = res_np
 
-
-for x in range(20):
-    iterate(1)
-    print(data_matrix)
+iterate(1)
+print(data_matrix)

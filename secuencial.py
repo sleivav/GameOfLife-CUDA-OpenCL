@@ -1,12 +1,11 @@
 import numpy as np
-import time
 
-import data_manager
+from data_manager import DataManager
 
 width = 1024
 height = 1024
 
-data_matrix = data_manager.generate_data(width, height, 0.5)
+data_matrix = DataManager.generate_data(width, height, 0.5)
 result_matrix = np.empty(shape=(width, height))
 
 
@@ -40,7 +39,3 @@ def iterate(iterations: int):
     for x in range(iterations):
         compute(width, height)
     return 0
-
-then = time.time()
-#iterate(200)
-print(time.time() - then)
