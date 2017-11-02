@@ -1,10 +1,9 @@
 from datetime import datetime
 
-from data_manager import DataManager
-from opencl_gol import OpenCLGameOfLife
-from sequential_gol import SequentialGameOfLife
-
 from src.cuda_gol import CudaGameOfLife
+from src.data_manager import DataManager
+from src.opencl_gol import OpenCLGameOfLife
+from src.sequential_gol import SequentialGameOfLife
 
 
 def basicTest(width: int, height: int, prob: float):
@@ -33,6 +32,3 @@ def basicTest(width: int, height: int, prob: float):
     time_end = datetime.now()
     diff = str((time_end - time_start).total_seconds())
     print("Tiempo opencl: " + diff)
-
-if __name__ == '__main__':
-    basicTest(16, 16, 0.5)

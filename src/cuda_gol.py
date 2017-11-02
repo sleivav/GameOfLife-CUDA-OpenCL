@@ -1,5 +1,6 @@
 import numpy as np
 import pycuda.driver as drv
+import pycuda.autoinit
 from pycuda.compiler import SourceModule
 
 from src.gol import GameOfLife
@@ -25,6 +26,9 @@ class CudaGameOfLife(GameOfLife):
         for i in range(iterations):
             func(data_gpu, np.int32(self.width),
                  np.int32(self.height), res_gpu, block=(32, 32, 1))
+            temp = data_gpu
             data_gpu = res_gpu
+            res_gpu = temp
+
         self.data_matrix = drv.from_device(data_gpu,
                                            (self.width, self.height), 'int')

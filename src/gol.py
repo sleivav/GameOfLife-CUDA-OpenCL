@@ -13,7 +13,7 @@ class GameOfLife(ABC):
                 file = open(program_file, 'r')
                 self.program_file = file
             except IOError:
-                print("Can't open file")
+                raise IOError("Can't open file: " + program_file)
         self.data_matrix = DataManager.load_data(input_file)
         self.result_matrix = np.empty_like(self.data_matrix)
         self.width = self.data_matrix.shape[0]
