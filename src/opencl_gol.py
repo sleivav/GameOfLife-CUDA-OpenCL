@@ -1,7 +1,9 @@
 from __future__ import absolute_import, print_function
-from gol import GameOfLife
+
 import numpy as np
 import pyopencl as cl
+
+from src.gol import GameOfLife
 
 
 class OpenCLGameOfLife(GameOfLife):

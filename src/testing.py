@@ -1,9 +1,10 @@
 from datetime import datetime
 
-from cuda_gol import CudaGameOfLife
+from data_manager import DataManager
 from opencl_gol import OpenCLGameOfLife
 from sequential_gol import SequentialGameOfLife
-from data_manager import DataManager
+
+from src.cuda_gol import CudaGameOfLife
 
 
 def basicTest(width: int, height: int, prob: float):

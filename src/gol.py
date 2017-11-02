@@ -1,7 +1,8 @@
 from abc import ABC, abstractmethod
 
-from data_manager import DataManager
 import numpy as np
+
+from src.data_manager import DataManager
 
 
 class GameOfLife(ABC):

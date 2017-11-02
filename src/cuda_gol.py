@@ -1,8 +1,8 @@
-from pycuda.compiler import SourceModule
-from gol import GameOfLife
-import pycuda.driver as drv
-import pycuda.autoinit
 import numpy as np
+import pycuda.driver as drv
+from pycuda.compiler import SourceModule
+
+from src.gol import GameOfLife
 
 
 class CudaGameOfLife(GameOfLife):
