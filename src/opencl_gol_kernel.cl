@@ -1,4 +1,4 @@
-__kernel void simpleLifeKernel(__global int* lifeData, __global int* dims, __global int* resultLifeData) {
+__kernel void simpleLifeKernel(__global int* data, __global int* dims, __global int* res) {
   int worldWidth = dims[0];
   int worldHeight = dims[1];
   int worldSize = worldWidth * worldHeight;
@@ -7,17 +7,16 @@ __kernel void simpleLifeKernel(__global int* lifeData, __global int* dims, __glo
       cellId < worldSize;
       cellId += get_local_size(0) * get_num_groups(0)) {
     int x = cellId % worldWidth;
-    int yAbs = cellId - x;
+    int y = cellId - x;
     int xLeft = (x + worldWidth - 1) % worldWidth;
     int xRight = (x + 1) % worldWidth;
-    int yAbsUp = (yAbs + worldSize - worldWidth) % worldSize;
-    int yAbsDown = (yAbs + worldWidth) % worldSize;
+    int yUp = (y + worldSize - worldWidth) % worldSize;
+    int yDown = (y + worldWidth) % worldSize;
 
-    int aliveCells = lifeData[xLeft + yAbsUp] + lifeData[x + yAbsUp]
-      + lifeData[xRight + yAbsUp] + lifeData[xLeft + yAbs] + lifeData[xRight + yAbs]
-      + lifeData[xLeft + yAbsDown] + lifeData[x + yAbsDown] + lifeData[xRight + yAbsDown];
+    int aliveCells = data[xLeft + yUp] + data[x + yUp] +
+                     data[xRight + yUp] + data[xLeft + y] + data[xRight + y] +
+                     data[xLeft + yDown] + data[x + yDown] + data[xRight + yDown];
 
-    resultLifeData[x + yAbs] =
-      aliveCells == 3 || (aliveCells == 2 && lifeData[x + yAbs]) ? 1 : 0;
+    res[x + y] = aliveCells == 3 || (aliveCells == 2 && data[x + y]) ? 1 : 0;
   }
 }
