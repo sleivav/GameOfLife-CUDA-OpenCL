@@ -9,8 +9,8 @@ __global__ void simpleLifeKernel(int* data, int worldWidth,
     int y = cellId - x;
     int xLeft = (x + worldWidth - 1) % worldWidth;
     int xRight = (x + 1) % worldWidth;
-    int yUp = (y + worldSize - worldWidth) % worldSize;
-    int yDown = (y + worldWidth) % worldSize;
+    int yUp = (y + size - worldWidth) % size;
+    int yDown = (y + worldWidth) % size;
 
     int aliveCells = data[xLeft + yUp] + data[x + yUp] +
                      data[xRight + yUp] + data[xLeft + y] + data[xRight + y] +

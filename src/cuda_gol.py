@@ -7,12 +7,13 @@ from src.gol import GameOfLife
 
 
 class CudaGameOfLife(GameOfLife):
-    def __init__(self, input_file: str, program_file: str):
+    def __init__(self, input_file: str, program_file: str, block_size=32):
         super().__init__(input_file, program_file)
         # Flatten data to work on kernel
         self.data_matrix = self.data_matrix.flatten()
         self.result_matrix = self.result_matrix.flatten()
         self.kernel = SourceModule(self.program_file.read())
+        self.block_size = block_size
 
     def iterate(self, iterations: int):
         # Prepare and copy data to device
@@ -25,7 +26,8 @@ class CudaGameOfLife(GameOfLife):
         func = self.kernel.get_function("simpleLifeKernel")
         for i in range(iterations):
             func(data_gpu, np.int32(self.width),
-                 np.int32(self.height), res_gpu, block=(32, 32, 1))
+                 np.int32(self.height), res_gpu,
+                 block=(self.block_size, self.block_size, 1))
             temp = data_gpu
             data_gpu = res_gpu
             res_gpu = temp
