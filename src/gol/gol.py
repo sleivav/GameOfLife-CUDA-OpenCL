@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 import numpy as np
 
-from src.data_manager import DataManager
+from src.gol.data_manager import DataManager
 
 
 class GameOfLife(ABC):
