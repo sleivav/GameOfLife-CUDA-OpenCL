@@ -1,9 +1,11 @@
 import os
 from datetime import datetime
 
-from src.cuda_gol import CudaGameOfLife
-from src.data_manager import DataManager
-from src.opencl_gol import OpenCLGameOfLife
+from src.gol.cuda_gol import CudaGameOfLife
+from src.gol.opencl_gol import OpenCLGameOfLife
+
+from src.gol.data_manager import DataManager
+
 
 def basicTest(width: int, height: int, prob: float, iterations: int):
     test_file = 'test.out'

@@ -1,14 +1,12 @@
 import os
-import numpy as np
 import unittest
 
-from datetime import datetime
+import numpy as np
+from src.gol.cuda_gol import CudaGameOfLife
+from src.gol.opencl_gol import OpenCLGameOfLife
+from src.gol.sequential_gol import SequentialGameOfLife
 
-from src.data_manager import DataManager
-from src.opencl_gol import OpenCLGameOfLife
-from src.sequential_gol import SequentialGameOfLife
-
-from src.cuda_gol import CudaGameOfLife
+from src.gol.data_manager import DataManager
 
 
 class ConsistencyTest(unittest.TestCase):
