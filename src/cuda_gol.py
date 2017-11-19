@@ -1,5 +1,6 @@
 import numpy as np
 import pycuda.driver as drv
+import math
 import pycuda.autoinit
 from pycuda.compiler import SourceModule
 
@@ -18,19 +19,21 @@ class CudaGameOfLife(GameOfLife):
     def iterate(self, iterations: int):
         # Prepare and copy data to device
         data = self.data_matrix.astype(np.int32)
-        res = self.data_matrix.astype(np.int32)
         data_gpu = drv.to_device(data)
-        res_gpu = drv.to_device(res)
+        res_gpu = drv.to_device(data)
+        dimensions = np.array([self.width, self.height])
+        dims = drv.to_device(dimensions)
 
         # Load function and iterate
         func = self.kernel.get_function("simpleLifeKernel")
+
+        grid_dim = math.ceil(self.width / self.block_size)
+        global_size = (grid_dim * self.block_size, grid_dim * self.block_size)
+
         for i in range(iterations):
-            func(data_gpu, np.int32(self.width),
-                 np.int32(self.height), res_gpu,
-                 block=(self.block_size, self.block_size, 1))
-            temp = data_gpu
+            func(data_gpu, dims, res_gpu,
+                 block=(self.block_size, 1, 1), grid=(grid_dim, 1))
             data_gpu = res_gpu
-            res_gpu = temp
 
         self.data_matrix = drv.from_device(data_gpu,
                                            (self.width, self.height), 'int')

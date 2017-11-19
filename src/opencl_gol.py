@@ -1,5 +1,6 @@
 from __future__ import absolute_import, print_function
 
+import math
 import numpy as np
 import pyopencl as cl
 
@@ -22,7 +23,7 @@ class OpenCLGameOfLife(GameOfLife):
         self.ctx = cl.Context(my_gpu_devices)
 
         # Intel context
-        #self.ctx = cl.create_some_context()
+        # self.ctx = cl.create_some_context()
 
         self.queue = cl.CommandQueue(self.ctx)
         self.mf = cl.mem_flags
@@ -43,10 +44,12 @@ class OpenCLGameOfLife(GameOfLife):
         prog = self.kernel.simpleLifeKernel
 
         for i in range(iterations):
-            prog(self.queue, self.data_matrix.shape, None,
+            prog(self.queue, self.data_matrix.shape,
+                 (np.minimum(32, self.width * self.height), ),
                  life_data, dim, result_life_data).wait()
+
             life_data = result_life_data
 
         res_np = np.empty_like(res)
-        cl.enqueue_copy(self.queue, res_np, result_life_data).wait
+        cl.enqueue_copy(self.queue, res_np, result_life_data).wait()
         self.data_matrix = res_np

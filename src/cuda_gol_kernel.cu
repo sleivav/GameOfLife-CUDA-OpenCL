@@ -1,5 +1,6 @@
-__global__ void simpleLifeKernel(int* data, int worldWidth,
-    int worldHeight, int* res) {
+__global__ void simpleLifeKernel(int* data, int* dims, int* res) {
+  int worldWidth = dims[0];
+  int worldHeight = dims[1];
   int size = worldWidth * worldHeight;
 
   for (int cellId = __mul24(blockIdx.x, blockDim.x) + threadIdx.x;
