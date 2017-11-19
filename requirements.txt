@@ -1,3 +1,4 @@
+matplotlib
 pycuda==2017.1.1+cuda8061
 pyopencl==2017.2+cl12
 numpy==1.13.3
