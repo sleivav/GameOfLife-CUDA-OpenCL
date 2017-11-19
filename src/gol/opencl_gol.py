@@ -4,7 +4,7 @@ import math
 import numpy as np
 import pyopencl as cl
 
-from src.gol import GameOfLife
+from src.gol.gol import GameOfLife
 
 
 class OpenCLGameOfLife(GameOfLife):

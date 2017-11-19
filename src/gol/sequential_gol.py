@@ -1,4 +1,4 @@
-from src.gol import GameOfLife
+from src.gol.gol import GameOfLife
 
 
 class SequentialGameOfLife(GameOfLife):

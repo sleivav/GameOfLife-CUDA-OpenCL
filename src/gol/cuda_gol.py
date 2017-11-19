@@ -4,7 +4,7 @@ import math
 import pycuda.autoinit
 from pycuda.compiler import SourceModule
 
-from src.gol import GameOfLife
+from src.gol.gol import GameOfLife
 
 
 class CudaGameOfLife(GameOfLife):
