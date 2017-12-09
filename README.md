@@ -1,4 +1,4 @@
-# Game of Life Cuda PyOpenGL
+# Game of Life PyCuda PyOpenCL
 
 Implementation of [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) in Python, PyCuda and PyOpenCL
 
